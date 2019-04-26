@@ -3,11 +3,13 @@ var moment = require('moment');
 
 var Schema = mongoose.Schema;
 
+const status = ['Available', 'Maintenance', 'Loaned', 'Reserved'];
+
 var BookInstanceSchema = new Schema(
     {
         book: { type: Schema.Types.ObjectId, ref: 'Book', required: true }, //reference to the associated book
         imprint: { type: String, required: true },
-        status: { type: String, required: true, enum: ['Available', 'Maintenance', 'Loaned', 'Reserved'], default: 'Maintenance' },
+        status: { type: String, required: true, enum: status, default: 'Maintenance' },
         due_back: { type: Date, default: Date.now }
     }
 );
@@ -26,4 +28,5 @@ BookInstanceSchema
     });
 
 //Export model
-module.exports = mongoose.model('BookInstance', BookInstanceSchema);
+module.exports.bookInstanceStatus = status;
+module.exports.BookInstance = mongoose.model('BookInstance', BookInstanceSchema);

@@ -1,4 +1,4 @@
-var BookInstance = require('../models/bookinstance');
+var { BookInstance, bookInstanceStatus } = require('../models/bookinstance');
 const { body, validationResult } = require('express-validator/check');
 const { sanitizeBody } = require('express-validator/filter');
 var Book = require('../models/book');
@@ -32,12 +32,14 @@ exports.bookinstance_detail = function (req, res) {
 // Display BookInstance create form on GET.
 exports.bookinstance_create_get = function (req, res) {
 
-        Book.find({}, 'title')
-            .exec(function (err, books) {
-                if (err) { return next(err); }
-                // Successful, so render.
-                res.render('bookinstance_form', { title: 'Create BookInstance', book_list: books });
-            });
+
+    Book.find({}, 'title')
+        .sort('title')
+        .exec(function (err, books) {
+            if (err) { return next(err); }
+            // Successful, so render.
+            res.render('bookinstance_form', { title: 'Create BookInstance', book_list: books, bookInstanceStatus: bookInstanceStatus });
+        });
 
 };
 
@@ -76,7 +78,7 @@ exports.bookinstance_create_post = [
                 .exec(function (err, books) {
                     if (err) { return next(err); }
                     // Successful, so render.
-                    res.render('bookinstance_form', { title: 'Create BookInstance', book_list: books, selected_book: bookinstance.book._id, errors: errors.array(), bookinstance: bookinstance });
+                    res.render('bookinstance_form', { title: 'Create BookInstance', book_list: books, selected_book: bookinstance.book._id, errors: errors.array(), bookinstance: bookinstance, bookInstanceStatus: bookInstanceStatus });
                 });
             return;
         }
